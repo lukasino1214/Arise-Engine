@@ -4,7 +4,87 @@
 
 # project
 cmake_minimum_required(VERSION 3.13.0)
-project(Arise LANGUAGES C CXX ASM)
+project(Arise_engine LANGUAGES C CXX ASM)
+
+# target
+add_executable(Arise_engine "")
+set_target_properties(Arise_engine PROPERTIES OUTPUT_NAME "Arise_engine")
+set_target_properties(Arise_engine PROPERTIES RUNTIME_OUTPUT_DIRECTORY "build/linux/x86_64/release")
+add_dependencies(Arise_engine Arise)
+target_include_directories(Arise_engine PRIVATE
+    /home/lukas/repos/vcpkg/installed/x64-linux/include
+    /home/lukas/.xmake/packages/g/glfw/3.3.4/58b838c9240946ef80fade0f66a356e9/include
+    /usr/include/X11/dri
+    /home/lukas/.xmake/packages/x/xtrans/1.4.0/576fb3beba324ff6ba8b503904027ceb/include
+    /home/lukas/.xmake/packages/y/yaml-cpp/0.7.0/c43d7f3fd9044adcaea2b25c200c62dd/include
+    /home/lukas/.xmake/packages/e/entt/v3.8.1/460c7a285c1d41b0a5ff74bf982adbf8/include
+)
+target_compile_definitions(Arise_engine PRIVATE
+    NDEBUG
+    _GLFW_X11
+    GLFW_INCLUDE_NONE
+)
+set_property(TARGET Arise_engine PROPERTY C_STANDARD 99)
+if(MSVC)
+    target_compile_options(Arise_engine PRIVATE $<$<COMPILE_LANGUAGE:C>:-TP>)
+endif()
+target_compile_options(Arise_engine PRIVATE
+    $<$<COMPILE_LANGUAGE:C>:-m64>
+    $<$<COMPILE_LANGUAGE:CXX>:-m64>
+    $<$<COMPILE_LANGUAGE:C>:-DNDEBUG>
+    $<$<COMPILE_LANGUAGE:CXX>:-DNDEBUG>
+)
+target_compile_features(Arise_engine PRIVATE c_std_99)
+target_compile_features(Arise_engine PRIVATE cxx_std_20)
+if(MSVC)
+    target_compile_options(Arise_engine PRIVATE $<$<CONFIG:Release>:-Ox -fp:fast>)
+else()
+    target_compile_options(Arise_engine PRIVATE -O3)
+endif()
+target_link_libraries(Arise_engine PRIVATE
+    glad
+    glfw3
+    Xext
+    X11
+    X11-xcb
+    xcb
+    Xdmcp
+    Xau
+    Xi
+    Xfixes
+    Xcursor
+    Xrender
+    Xinerama
+    Xrandr
+    OpenGL
+    spdlog
+    yaml-cpp
+    fmt
+    assimp
+    vulkan
+    imgui
+    Arise
+    dl
+    pthread
+)
+target_link_directories(Arise_engine PRIVATE
+    /home/lukas/repos/vcpkg/installed/x64-linux/lib
+    /home/lukas/.xmake/packages/g/glfw/3.3.4/58b838c9240946ef80fade0f66a356e9/lib
+    /usr/lib
+    /home/lukas/.xmake/packages/y/yaml-cpp/0.7.0/c43d7f3fd9044adcaea2b25c200c62dd/lib
+    build/linux/x86_64/release
+)
+target_link_options(Arise_engine PRIVATE
+    -m64
+)
+target_sources(Arise_engine PRIVATE
+    Engine/main.cpp
+    Engine/Panels/ContentBrowserPanel.cpp
+    Engine/Panels/SceneHierarchyPanel.cpp
+    Engine/stb_image.h
+    Engine/Panels/ContentBrowserPanel.h
+    Engine/Panels/SceneHierarchyPanel.h
+)
 
 # target
 add_library(Arise STATIC "")
@@ -16,8 +96,6 @@ target_include_directories(Arise PRIVATE
     /usr/include/X11/dri
     /home/lukas/.xmake/packages/x/xtrans/1.4.0/576fb3beba324ff6ba8b503904027ceb/include
     /home/lukas/.xmake/packages/y/yaml-cpp/0.7.0/c43d7f3fd9044adcaea2b25c200c62dd/include
-    /home/lukas/.xmake/packages/a/assimp/v5.0.1/d3562ec4c95c4a8489a69b14b736ba2e/include
-    /home/lukas/.xmake/packages/i/irrxml/1.2/188998f11c7e4ecd864b53ae0118df83/include
     /home/lukas/.xmake/packages/e/entt/v3.8.1/460c7a285c1d41b0a5ff74bf982adbf8/include
 )
 target_compile_definitions(Arise PRIVATE
@@ -62,8 +140,6 @@ target_link_libraries(Arise PRIVATE
     yaml-cpp
     fmt
     assimp
-    z
-    irrxml
     vulkan
     imgui
     dl
@@ -74,8 +150,6 @@ target_link_directories(Arise PRIVATE
     /home/lukas/.xmake/packages/g/glfw/3.3.4/58b838c9240946ef80fade0f66a356e9/lib
     /usr/lib
     /home/lukas/.xmake/packages/y/yaml-cpp/0.7.0/c43d7f3fd9044adcaea2b25c200c62dd/lib
-    /home/lukas/.xmake/packages/a/assimp/v5.0.1/d3562ec4c95c4a8489a69b14b736ba2e/lib
-    /home/lukas/.xmake/packages/i/irrxml/1.2/188998f11c7e4ecd864b53ae0118df83/lib
 )
 target_link_options(Arise PRIVATE
 )
@@ -136,91 +210,5 @@ target_sources(Arise PRIVATE
     Arise/Renderer/OpenGL/OpenGLRendererAPI.h
     Arise/Renderer/OpenGL/OpenGLShader.h
     Arise/Renderer/OpenGL/OpenGLVertexArray.h
-)
-
-# target
-add_executable(Arise_engine "")
-set_target_properties(Arise_engine PROPERTIES OUTPUT_NAME "Arise_engine")
-set_target_properties(Arise_engine PROPERTIES RUNTIME_OUTPUT_DIRECTORY "build/linux/x86_64/release")
-add_dependencies(Arise_engine Arise)
-target_include_directories(Arise_engine PRIVATE
-    /home/lukas/repos/vcpkg/installed/x64-linux/include
-    /home/lukas/.xmake/packages/g/glfw/3.3.4/58b838c9240946ef80fade0f66a356e9/include
-    /usr/include/X11/dri
-    /home/lukas/.xmake/packages/x/xtrans/1.4.0/576fb3beba324ff6ba8b503904027ceb/include
-    /home/lukas/.xmake/packages/y/yaml-cpp/0.7.0/c43d7f3fd9044adcaea2b25c200c62dd/include
-    /home/lukas/.xmake/packages/a/assimp/v5.0.1/d3562ec4c95c4a8489a69b14b736ba2e/include
-    /home/lukas/.xmake/packages/i/irrxml/1.2/188998f11c7e4ecd864b53ae0118df83/include
-    /home/lukas/.xmake/packages/e/entt/v3.8.1/460c7a285c1d41b0a5ff74bf982adbf8/include
-)
-target_compile_definitions(Arise_engine PRIVATE
-    NDEBUG
-    _GLFW_X11
-    GLFW_INCLUDE_NONE
-)
-set_property(TARGET Arise_engine PROPERTY C_STANDARD 99)
-if(MSVC)
-    target_compile_options(Arise_engine PRIVATE $<$<COMPILE_LANGUAGE:C>:-TP>)
-endif()
-target_compile_options(Arise_engine PRIVATE
-    $<$<COMPILE_LANGUAGE:C>:-m64>
-    $<$<COMPILE_LANGUAGE:CXX>:-m64>
-    $<$<COMPILE_LANGUAGE:C>:-DNDEBUG>
-    $<$<COMPILE_LANGUAGE:CXX>:-DNDEBUG>
-)
-target_compile_features(Arise_engine PRIVATE c_std_99)
-target_compile_features(Arise_engine PRIVATE cxx_std_20)
-if(MSVC)
-    target_compile_options(Arise_engine PRIVATE $<$<CONFIG:Release>:-Ox -fp:fast>)
-else()
-    target_compile_options(Arise_engine PRIVATE -O3)
-endif()
-target_link_libraries(Arise_engine PRIVATE
-    glad
-    glfw3
-    Xext
-    X11
-    X11-xcb
-    xcb
-    Xdmcp
-    Xau
-    Xi
-    Xfixes
-    Xcursor
-    Xrender
-    Xinerama
-    Xrandr
-    OpenGL
-    spdlog
-    yaml-cpp
-    fmt
-    assimp
-    z
-    irrxml
-    vulkan
-    imgui
-    Arise
-    dl
-    pthread
-)
-target_link_directories(Arise_engine PRIVATE
-    /home/lukas/repos/vcpkg/installed/x64-linux/lib
-    /home/lukas/.xmake/packages/g/glfw/3.3.4/58b838c9240946ef80fade0f66a356e9/lib
-    /usr/lib
-    /home/lukas/.xmake/packages/y/yaml-cpp/0.7.0/c43d7f3fd9044adcaea2b25c200c62dd/lib
-    /home/lukas/.xmake/packages/a/assimp/v5.0.1/d3562ec4c95c4a8489a69b14b736ba2e/lib
-    /home/lukas/.xmake/packages/i/irrxml/1.2/188998f11c7e4ecd864b53ae0118df83/lib
-    build/linux/x86_64/release
-)
-target_link_options(Arise_engine PRIVATE
-    -m64
-)
-target_sources(Arise_engine PRIVATE
-    Engine/main.cpp
-    Engine/Panels/ContentBrowserPanel.cpp
-    Engine/Panels/SceneHierarchyPanel.cpp
-    Engine/stb_image.h
-    Engine/Panels/ContentBrowserPanel.h
-    Engine/Panels/SceneHierarchyPanel.h
 )
 
