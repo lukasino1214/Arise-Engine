@@ -11,6 +11,7 @@ namespace Engine {
     static const uint32_t s_MaxFramebufferSize = 8192;
 
     namespace Utils {
+
         static GLenum TextureTarget(bool multisampled) {
             return multisampled ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
         }
@@ -123,7 +124,7 @@ namespace Engine {
                         Utils::AttachColorTexture(m_ColorAttachments[i], m_Specification.Samples, GL_RGBA8, GL_RGBA, m_Specification.Width, m_Specification.Height, i);
                         break;
                     case FramebufferTextureFormat::RED_INTEGER:
-                        Utils::AttachColorTexture(m_ColorAttachments[i], m_Specification.Samples, GL_R32I, GL_RED_INTEGER, m_Specification.Width, m_Specification.Height, i);
+                        Utils::AttachColorTexture(m_ColorAttachments[i], m_Specification.Samples, GL_R32UI, GL_RED_INTEGER, m_Specification.Width, m_Specification.Height, i);
                         break;
                 }
             }
@@ -163,9 +164,9 @@ namespace Engine {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
-    void OpenGLFramebuffer::Resize(uint32_t width, uint32_t height) {
-        if (width == 0 || height == 0 || width > s_MaxFramebufferSize || height > s_MaxFramebufferSize)
-        {
+    void OpenGLFramebuffer::Resize(uint32_t width, uint32_t height)
+    {
+        if (width == 0 || height == 0 || width > s_MaxFramebufferSize || height > s_MaxFramebufferSize) {
             //HZ_CORE_WARN("Attempted to rezize framebuffer to {0}, {1}", width, height);
             return;
         }
@@ -180,7 +181,7 @@ namespace Engine {
 
         glReadBuffer(GL_COLOR_ATTACHMENT0 + attachmentIndex);
         int pixelData;
-        glReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_INT, &pixelData);
+        glReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_UNSIGNED_INT, &pixelData);
         return pixelData;
 
     }
@@ -189,7 +190,7 @@ namespace Engine {
         //HZ_CORE_ASSERT(attachmentIndex < m_ColorAttachments.size());
 
         auto& spec = m_ColorAttachmentSpecifications[attachmentIndex];
-        glClearTexImage(m_ColorAttachments[attachmentIndex], 0,
-                        Utils::HazelFBTextureFormatToGL(spec.TextureFormat), GL_INT, &value);
+        glClearTexImage(m_ColorAttachments[attachmentIndex], 0, Utils::HazelFBTextureFormatToGL(spec.TextureFormat), GL_INT, &value);
     }
+
 }

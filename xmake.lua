@@ -12,7 +12,7 @@ end
 
 set_optimize("fastest")
 
-packages = {"glad", "glfw", "glm", "spdlog", "yaml-cpp", "fmt", "vcpkg::assimp", "vulkan", "entt", "stb", "vcpkg::imgui"}
+packages = {"glad", "glfw", "glm", "spdlog", "yaml-cpp", "fmt", "vcpkg::assimp", "vulkan", "entt", "stb", "vcpkg::imgui", "imguizmo"}
 --packages = {"assimp"}
 
 add_requires(packages)

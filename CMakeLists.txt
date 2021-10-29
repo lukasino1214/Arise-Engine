@@ -4,7 +4,137 @@
 
 # project
 cmake_minimum_required(VERSION 3.13.0)
-project(Arise_engine LANGUAGES C CXX ASM)
+project(Arise LANGUAGES C CXX ASM)
+
+# target
+add_library(Arise STATIC "")
+set_target_properties(Arise PROPERTIES OUTPUT_NAME "Arise")
+set_target_properties(Arise PROPERTIES ARCHIVE_OUTPUT_DIRECTORY "build/linux/x86_64/release")
+target_include_directories(Arise PRIVATE
+    /home/lukas/repos/vcpkg/installed/x64-linux/include
+    /home/lukas/.xmake/packages/g/glfw/3.3.4/58b838c9240946ef80fade0f66a356e9/include
+    /usr/include/X11/dri
+    /home/lukas/.xmake/packages/x/xtrans/1.4.0/576fb3beba324ff6ba8b503904027ceb/include
+    /home/lukas/.xmake/packages/y/yaml-cpp/0.7.0/c43d7f3fd9044adcaea2b25c200c62dd/include
+    /home/lukas/.xmake/packages/e/entt/v3.8.1/460c7a285c1d41b0a5ff74bf982adbf8/include
+)
+target_compile_definitions(Arise PRIVATE
+    NDEBUG
+    _GLFW_X11
+    GLFW_INCLUDE_NONE
+)
+set_property(TARGET Arise PROPERTY C_STANDARD 99)
+if(MSVC)
+    target_compile_options(Arise PRIVATE $<$<COMPILE_LANGUAGE:C>:-TP>)
+endif()
+target_compile_options(Arise PRIVATE
+    $<$<COMPILE_LANGUAGE:C>:-m64>
+    $<$<COMPILE_LANGUAGE:CXX>:-m64>
+    $<$<COMPILE_LANGUAGE:C>:-DNDEBUG>
+    $<$<COMPILE_LANGUAGE:CXX>:-DNDEBUG>
+)
+target_compile_features(Arise PRIVATE c_std_99)
+target_compile_features(Arise PRIVATE cxx_std_20)
+if(MSVC)
+    target_compile_options(Arise PRIVATE $<$<CONFIG:Release>:-Ox -fp:fast>)
+else()
+    target_compile_options(Arise PRIVATE -O3)
+endif()
+target_link_libraries(Arise PRIVATE
+    glad
+    glfw3
+    Xext
+    X11-xcb
+    X11
+    xcb
+    Xdmcp
+    Xau
+    Xi
+    Xfixes
+    Xcursor
+    Xrender
+    Xinerama
+    Xrandr
+    OpenGL
+    spdlog
+    yaml-cpp
+    fmt
+    assimp
+    vulkan
+    imgui
+    imguizmo
+    dl
+    pthread
+)
+target_link_directories(Arise PRIVATE
+    /home/lukas/repos/vcpkg/installed/x64-linux/lib
+    /home/lukas/.xmake/packages/g/glfw/3.3.4/58b838c9240946ef80fade0f66a356e9/lib
+    /usr/lib
+    /home/lukas/.xmake/packages/y/yaml-cpp/0.7.0/c43d7f3fd9044adcaea2b25c200c62dd/lib
+)
+target_link_options(Arise PRIVATE
+)
+target_sources(Arise PRIVATE
+    Arise/Core/Log.cpp
+    Arise/Core/UUID.cpp
+    Arise/Core/Window.cpp
+    Arise/Data/Entity.cpp
+    Arise/Data/Project.cpp
+    Arise/Data/Scene.cpp
+    Arise/ImGui/ImGuiRenderer.cpp
+    Arise/Math/Math.cpp
+    Arise/Renderer/Buffer.cpp
+    Arise/Renderer/Camera.cpp
+    Arise/Renderer/Framebuffer.cpp
+    Arise/Renderer/RenderCommand.cpp
+    Arise/Renderer/Renderer.cpp
+    Arise/Renderer/RendererAPI.cpp
+    Arise/Renderer/Shader.cpp
+    Arise/Renderer/VertexArray.cpp
+    Arise/Serializer/ProjectSerializer.cpp
+    Arise/Serializer/SceneSerializer.cpp
+    Arise/Renderer/OpenGL/OpenGLBuffer.cpp
+    Arise/Renderer/OpenGL/OpenGLFramebuffer.cpp
+    Arise/Renderer/OpenGL/OpenGLGraphicsContext.cpp
+    Arise/Renderer/OpenGL/OpenGLRendererAPI.cpp
+    Arise/Renderer/OpenGL/OpenGLShader.cpp
+    Arise/Renderer/OpenGL/OpenGLVertexArray.cpp
+    Arise/Engine.h
+    Arise/Core/Assert.h
+    Arise/Core/Base.h
+    Arise/Core/Log.h
+    Arise/Core/Timer.h
+    Arise/Core/Timestamp.h
+    Arise/Core/UUID.h
+    Arise/Core/Window.h
+    Arise/Data/Components.h
+    Arise/Data/Entity.h
+    Arise/Data/Project.h
+    Arise/Data/Scene.h
+    Arise/Data/SimpleShapes.h
+    Arise/ImGui/ImGuiFileBrowser.h
+    Arise/ImGui/ImGuiRenderer.h
+    Arise/Math/Math.h
+    Arise/Renderer/Buffer.h
+    Arise/Renderer/Camera.h
+    Arise/Renderer/Framebuffer.h
+    Arise/Renderer/GraphicsContext.h
+    Arise/Renderer/Mesh.h
+    Arise/Renderer/Model.h
+    Arise/Renderer/RenderCommand.h
+    Arise/Renderer/Renderer.h
+    Arise/Renderer/RendererAPI.h
+    Arise/Renderer/Shader.h
+    Arise/Renderer/VertexArray.h
+    Arise/Serializer/ProjectSerializer.h
+    Arise/Serializer/SceneSerializer.h
+    Arise/Renderer/OpenGL/OpenGLBuffer.h
+    Arise/Renderer/OpenGL/OpenGLFramebuffer.h
+    Arise/Renderer/OpenGL/OpenGLGraphicsContext.h
+    Arise/Renderer/OpenGL/OpenGLRendererAPI.h
+    Arise/Renderer/OpenGL/OpenGLShader.h
+    Arise/Renderer/OpenGL/OpenGLVertexArray.h
+)
 
 # target
 add_executable(Arise_engine "")
@@ -45,8 +175,8 @@ target_link_libraries(Arise_engine PRIVATE
     glad
     glfw3
     Xext
-    X11
     X11-xcb
+    X11
     xcb
     Xdmcp
     Xau
@@ -63,6 +193,7 @@ target_link_libraries(Arise_engine PRIVATE
     assimp
     vulkan
     imgui
+    imguizmo
     Arise
     dl
     pthread
@@ -81,134 +212,7 @@ target_sources(Arise_engine PRIVATE
     Engine/main.cpp
     Engine/Panels/ContentBrowserPanel.cpp
     Engine/Panels/SceneHierarchyPanel.cpp
-    Engine/stb_image.h
     Engine/Panels/ContentBrowserPanel.h
     Engine/Panels/SceneHierarchyPanel.h
-)
-
-# target
-add_library(Arise STATIC "")
-set_target_properties(Arise PROPERTIES OUTPUT_NAME "Arise")
-set_target_properties(Arise PROPERTIES ARCHIVE_OUTPUT_DIRECTORY "build/linux/x86_64/release")
-target_include_directories(Arise PRIVATE
-    /home/lukas/repos/vcpkg/installed/x64-linux/include
-    /home/lukas/.xmake/packages/g/glfw/3.3.4/58b838c9240946ef80fade0f66a356e9/include
-    /usr/include/X11/dri
-    /home/lukas/.xmake/packages/x/xtrans/1.4.0/576fb3beba324ff6ba8b503904027ceb/include
-    /home/lukas/.xmake/packages/y/yaml-cpp/0.7.0/c43d7f3fd9044adcaea2b25c200c62dd/include
-    /home/lukas/.xmake/packages/e/entt/v3.8.1/460c7a285c1d41b0a5ff74bf982adbf8/include
-)
-target_compile_definitions(Arise PRIVATE
-    NDEBUG
-    _GLFW_X11
-    GLFW_INCLUDE_NONE
-)
-set_property(TARGET Arise PROPERTY C_STANDARD 99)
-if(MSVC)
-    target_compile_options(Arise PRIVATE $<$<COMPILE_LANGUAGE:C>:-TP>)
-endif()
-target_compile_options(Arise PRIVATE
-    $<$<COMPILE_LANGUAGE:C>:-m64>
-    $<$<COMPILE_LANGUAGE:CXX>:-m64>
-    $<$<COMPILE_LANGUAGE:C>:-DNDEBUG>
-    $<$<COMPILE_LANGUAGE:CXX>:-DNDEBUG>
-)
-target_compile_features(Arise PRIVATE c_std_99)
-target_compile_features(Arise PRIVATE cxx_std_20)
-if(MSVC)
-    target_compile_options(Arise PRIVATE $<$<CONFIG:Release>:-Ox -fp:fast>)
-else()
-    target_compile_options(Arise PRIVATE -O3)
-endif()
-target_link_libraries(Arise PRIVATE
-    glad
-    glfw3
-    Xext
-    X11
-    X11-xcb
-    xcb
-    Xdmcp
-    Xau
-    Xi
-    Xfixes
-    Xcursor
-    Xrender
-    Xinerama
-    Xrandr
-    OpenGL
-    spdlog
-    yaml-cpp
-    fmt
-    assimp
-    vulkan
-    imgui
-    dl
-    pthread
-)
-target_link_directories(Arise PRIVATE
-    /home/lukas/repos/vcpkg/installed/x64-linux/lib
-    /home/lukas/.xmake/packages/g/glfw/3.3.4/58b838c9240946ef80fade0f66a356e9/lib
-    /usr/lib
-    /home/lukas/.xmake/packages/y/yaml-cpp/0.7.0/c43d7f3fd9044adcaea2b25c200c62dd/lib
-)
-target_link_options(Arise PRIVATE
-)
-target_sources(Arise PRIVATE
-    Arise/Core/Log.cpp
-    Arise/Core/UUID.cpp
-    Arise/Core/Window.cpp
-    Arise/Data/Entity.cpp
-    Arise/Data/Project.cpp
-    Arise/Data/Scene.cpp
-    Arise/ImGui/ImGuiRenderer.cpp
-    Arise/Renderer/Buffer.cpp
-    Arise/Renderer/Camera.cpp
-    Arise/Renderer/Framebuffer.cpp
-    Arise/Renderer/RenderCommand.cpp
-    Arise/Renderer/Renderer.cpp
-    Arise/Renderer/RendererAPI.cpp
-    Arise/Renderer/Shader.cpp
-    Arise/Renderer/VertexArray.cpp
-    Arise/Serializer/ProjectSerializer.cpp
-    Arise/Serializer/SceneSerializer.cpp
-    Arise/Renderer/OpenGL/OpenGLBuffer.cpp
-    Arise/Renderer/OpenGL/OpenGLFramebuffer.cpp
-    Arise/Renderer/OpenGL/OpenGLGraphicsContext.cpp
-    Arise/Renderer/OpenGL/OpenGLRendererAPI.cpp
-    Arise/Renderer/OpenGL/OpenGLShader.cpp
-    Arise/Renderer/OpenGL/OpenGLVertexArray.cpp
-    Arise/Engine.h
-    Arise/Core/Assert.h
-    Arise/Core/Base.h
-    Arise/Core/Log.h
-    Arise/Core/Timer.h
-    Arise/Core/Timestamp.h
-    Arise/Core/UUID.h
-    Arise/Core/Window.h
-    Arise/Data/Components.h
-    Arise/Data/Entity.h
-    Arise/Data/Project.h
-    Arise/Data/Scene.h
-    Arise/ImGui/ImGuiFileBrowser.h
-    Arise/ImGui/ImGuiRenderer.h
-    Arise/Renderer/Buffer.h
-    Arise/Renderer/Camera.h
-    Arise/Renderer/Framebuffer.h
-    Arise/Renderer/GraphicsContext.h
-    Arise/Renderer/Mesh.h
-    Arise/Renderer/Model.h
-    Arise/Renderer/RenderCommand.h
-    Arise/Renderer/Renderer.h
-    Arise/Renderer/RendererAPI.h
-    Arise/Renderer/Shader.h
-    Arise/Renderer/VertexArray.h
-    Arise/Serializer/ProjectSerializer.h
-    Arise/Serializer/SceneSerializer.h
-    Arise/Renderer/OpenGL/OpenGLBuffer.h
-    Arise/Renderer/OpenGL/OpenGLFramebuffer.h
-    Arise/Renderer/OpenGL/OpenGLGraphicsContext.h
-    Arise/Renderer/OpenGL/OpenGLRendererAPI.h
-    Arise/Renderer/OpenGL/OpenGLShader.h
-    Arise/Renderer/OpenGL/OpenGLVertexArray.h
 )
 

@@ -19,7 +19,8 @@
 #include "Renderer/Buffer.h"
 #include "Renderer/VertexArray.h"
 #include "Renderer/Camera.h"
-#include "Renderer/Model.h"
+//#include "Renderer/Model.h"
+#include "Math/Math.h"
 //#include "ImGui/ImGuiRenderer.h"
 
 #endif //ARISE_ENGINE_H

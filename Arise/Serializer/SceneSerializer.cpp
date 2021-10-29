@@ -98,6 +98,25 @@ namespace Engine {
             out << YAML::EndMap; // TransformComponent
         }
 
+        if (entity.HasComponent<CubeComponent>()) {
+            out << YAML::Key << "CubeComponent";
+            out << YAML::BeginMap; // TransformComponent
+
+            out << YAML::Key << "Cube" << YAML::Value << true;
+
+            out << YAML::EndMap; // TransformComponent
+        }
+
+        if (entity.HasComponent<ColorComponent>()) {
+            out << YAML::Key << "ColorComponent";
+            out << YAML::BeginMap; // TransformComponent
+
+            auto& color = entity.GetComponent<ColorComponent>();
+            out << YAML::Key << "Color" << YAML::Value << color.color;
+
+            out << YAML::EndMap; // TransformComponent
+        }
+
         out << YAML::EndMap; // Entity
     }
 
@@ -146,7 +165,7 @@ namespace Engine {
                     name = tagComponent["Tag"].as<std::string>();
 
 
-                Entity deserializedEntity = m_Scene->CreateEntity(name);
+                Entity deserializedEntity = m_Scene->CreateEntityWithUUID(uuid, name);
 
                 auto transformComponent = entity["TransformComponent"];
                 if (transformComponent) {
@@ -155,6 +174,27 @@ namespace Engine {
                     tc.Translation = transformComponent["Translation"].as<glm::vec3>();
                     tc.Rotation = transformComponent["Rotation"].as<glm::vec3>();
                     tc.Scale = transformComponent["Scale"].as<glm::vec3>();
+                }
+
+
+                /*auto CubeComponent = entity["CubeComponent"];
+                if (CubeComponent) {
+                    // Entities always have transforms
+                    auto& bruh = deserializedEntity.AddComponent<CubeComponent>();
+                }*/
+
+                auto Color = entity["ColorComponent"];
+                if (Color) {
+                    // Entities always have transforms
+                    auto& color = deserializedEntity.AddComponent<ColorComponent>();
+                    //deserializedEntity.AddComponent<TransformComponent>();
+                    color.color = Color["Color"].as<glm::vec3>();
+
+                }
+
+                auto Cube = entity["CubeComponent"];
+                if(Cube) {
+                    deserializedEntity.AddComponent<CubeComponent>();
                 }
             }
         }

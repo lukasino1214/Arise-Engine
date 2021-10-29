@@ -4,6 +4,8 @@
 
 #include "OpenGLGraphicsContext.h"
 
+#include "../../Core/Log.h"
+
 namespace Engine {
     OpenGLContext::OpenGLContext(GLFWwindow* windowHandle) : m_WindowHandle(windowHandle) {}
 

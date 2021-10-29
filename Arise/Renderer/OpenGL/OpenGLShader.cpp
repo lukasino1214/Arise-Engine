@@ -171,6 +171,11 @@ namespace Engine {
         glUniform1i(location, value);
     }
 
+    void OpenGLShader::SetUInt(const std::string &name, uint value) {
+        GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+        glUniform1ui(location, value);
+    }
+
     void OpenGLShader::SetIntArray(const std::string &name, int *values, uint32_t count) {
         GLint location = glGetUniformLocation(m_RendererID, name.c_str());
         glUniform1iv(location, count, values);

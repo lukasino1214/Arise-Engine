@@ -38,6 +38,7 @@ namespace Engine {
         std::vector<uint32_t> m_ColorAttachments;
         uint32_t m_DepthAttachment = 0;
     };
+
 }
 
 #endif //ARISE_ENGINE_OPENGLFRAMEBUFFER_H

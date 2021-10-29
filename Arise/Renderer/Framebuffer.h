@@ -25,8 +25,7 @@ namespace Engine {
 
     struct FramebufferTextureSpecification {
         FramebufferTextureSpecification() = default;
-        FramebufferTextureSpecification(FramebufferTextureFormat format)
-                : TextureFormat(format) {}
+        FramebufferTextureSpecification(FramebufferTextureFormat format) : TextureFormat(format) {}
 
         FramebufferTextureFormat TextureFormat = FramebufferTextureFormat::None;
         // TODO: filtering/wrap
@@ -34,8 +33,7 @@ namespace Engine {
 
     struct FramebufferAttachmentSpecification {
         FramebufferAttachmentSpecification() = default;
-        FramebufferAttachmentSpecification(std::initializer_list<FramebufferTextureSpecification> attachments)
-                : Attachments(attachments) {}
+        FramebufferAttachmentSpecification(std::initializer_list<FramebufferTextureSpecification> attachments) : Attachments(attachments) {}
 
         std::vector<FramebufferTextureSpecification> Attachments;
     };

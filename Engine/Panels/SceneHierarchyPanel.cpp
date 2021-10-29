@@ -12,6 +12,7 @@
 #include <filesystem>
 
 #include "../../Arise/Data/Components.h"
+#include "../../Arise/Core/Log.h"
 #include <string>
 
 #include <iostream>
@@ -158,7 +159,7 @@ namespace Engine {
     }
 
     template<typename T, typename UIFunction>
-    static void DrawComponent(const std::string& name, Entity entity, UIFunction uiFunction) {
+    void DrawComponent(const std::string& name, Entity entity, UIFunction uiFunction) {
         const ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_FramePadding;
         if (entity.HasComponent<T>())
         {
@@ -210,28 +211,28 @@ namespace Engine {
         ImGui::SameLine();
         ImGui::PushItemWidth(-1);
 
-        /*if (ImGui::Button("Add Component"))
+        if (ImGui::Button("Add Component"))
             ImGui::OpenPopup("AddComponent");
 
         if (ImGui::BeginPopup("AddComponent")) {
-            if (ImGui::MenuItem("Camera")) {
-                if (!m_SelectionContext.HasComponent<CameraComponent>())
-                    m_SelectionContext.AddComponent<CameraComponent>();
+            if (ImGui::MenuItem("Cube Mesh")) {
+                if (!m_SelectionContext.HasComponent<CubeComponent>())
+                    m_SelectionContext.AddComponent<CubeComponent>();
                 else
-                    HZ_CORE_WARN("This entity already has the Camera Component!");
+                    //HZ_CORE_WARN("This entity already has the Camera Component!");
                 ImGui::CloseCurrentPopup();
             }
 
-            if (ImGui::MenuItem("Sprite Renderer")) {
-                if (!m_SelectionContext.HasComponent<SpriteRendererComponent>())
-                    m_SelectionContext.AddComponent<SpriteRendererComponent>();
+            if (ImGui::MenuItem("Color Component")) {
+                if (!m_SelectionContext.HasComponent<ColorComponent>())
+                    m_SelectionContext.AddComponent<ColorComponent>();
                 else
-                    HZ_CORE_WARN("This entity already has the Sprite Renderer Component!");
+                    //HZ_CORE_WARN("This entity already has the Sprite Renderer Component!");
                 ImGui::CloseCurrentPopup();
             }
 
             ImGui::EndPopup();
-        }*/
+        }
 
         ImGui::PopItemWidth();
 
@@ -241,6 +242,21 @@ namespace Engine {
             DrawVec3Control("Rotation", rotation);
             component.Rotation = glm::radians(rotation);
             DrawVec3Control("Scale", component.Scale, 1.0f);
+        });
+
+        DrawComponent<CubeComponent>("Cube Mesh", entity, [](auto& component) {});
+
+        DrawComponent<ColorComponent>("Color", entity, [](auto& component) {
+            //auto color = entity.GetComponent<ColorComponent>().color;
+            //glm::vec3 color = component.color;
+            //component
+            //DrawVec3Control("Color", component.color);
+            /*DrawVec3Control("Translation", component.color.y);
+            DrawVec3Control("Translation", component.color.y);*/
+            //INFO("r: {}, g: {}, a: {}",color.x, color.y, color.z);
+            //component.color = color;
+            ImGui::ColorPicker3("Color", &component.color.x);
+            //INFO("r: {}, g: {}, a: {}",color.x, color.y, color.z);
         });
 
         /*DrawComponent<CameraComponent>("Camera", entity, [](auto& component) {

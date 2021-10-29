@@ -20,6 +20,7 @@ namespace Engine {
         virtual void Unbind() const override;
 
         virtual void SetInt(const std::string& name, int value) override;
+        virtual void SetUInt(const std::string& name, uint value) override;
         virtual void SetIntArray(const std::string& name, int* values, uint32_t count) override;
         virtual void SetFloat(const std::string& name, float value) override;
         virtual void SetFloat2(const std::string& name, const glm::vec2& value) override;
