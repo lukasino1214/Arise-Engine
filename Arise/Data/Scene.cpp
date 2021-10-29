@@ -143,6 +143,12 @@ namespace Engine {
     template<>
     void Scene::OnComponentAdded<IDComponent>(Entity entity, IDComponent& component) {}
 
+    template<>
+    void Scene::OnComponentAdded<CubeComponent>(Entity entity, CubeComponent& component) {}
+
+    template<>
+    void Scene::OnComponentAdded<ColorComponent>(Entity entity, ColorComponent& component) {}
+
     /*template<>
     void Scene::OnComponentAdded<CameraComponent>(Entity entity, CameraComponent& component) {
         if (m_ViewportWidth > 0 && m_ViewportHeight > 0)

@@ -39,6 +39,12 @@ namespace Engine {
         glm::mat4 GetView() { return m_View; }
         glm::mat4 GetProjection() { return m_Projection; }
 
+        void SetProjection(int width, int height) {
+            int m_Width = width;
+            int m_Height = height;
+            m_Projection = glm::perspective(glm::radians(m_FOV), (float)m_Width / m_Height, nearPlane, farPlane);
+        }
+
         // Updates and exports the camera matrix to the Vertex Shader
         void Matrix(float FOVdeg, float nearPlane, float farPlane, const char* uniform);
         // Handles camera inputs

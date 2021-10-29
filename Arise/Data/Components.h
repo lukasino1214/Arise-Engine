@@ -7,6 +7,7 @@
 
 #include "../Core/UUID.h"
 #include "../Core/Base.h"
+#include "SimpleShapes.h"
 
 //#include "../Renderer/Model.h"
 
@@ -49,13 +50,26 @@ namespace Engine {
 
             return glm::translate(glm::mat4(1.0f), Translation) * rotation * glm::scale(glm::mat4(1.0f), Scale);
         }
+
+        glm::vec3 GetTranslation() { return Translation; }
+        glm::vec3 GetRotation() { return Rotation; }
+        glm::vec3 GetScale() { return Scale; }
     };
 
 
-    /*struct MeshComponent {
-        std::string path = {};  // Maybe change it to std::filepath
-        Ref<Model> model;
-    };*/
+    struct CubeComponent {
+        Cube cube;
+
+        CubeComponent() = default;
+        CubeComponent(const CubeComponent&) = default;
+    };
+
+    struct ColorComponent {
+      glm::vec3 color = { 1.0f, 1.0f, 1.0f };
+
+      glm::vec3 GetColor() { return color; }
+      void SetColor(const glm::vec3& Color) { color = Color; }
+    };
 
 }
 
