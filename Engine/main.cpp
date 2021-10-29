@@ -60,18 +60,10 @@ int main() {
     int m_GizmoType;
     bool snap = false;
 
-    uint64_t number = 16565893855363150236;
-
-    uint32_t x = (uint32_t)(number>>32);
-    uint32_t y = (uint32_t)number;
-
-    INFO("{} {}", x, y);
-
-    INFO((((uint64_t)x) << 32 | y));
-
     Entity m_HoveredEntity;
-    uint64_t pixelData;
+    uint64_t pixelData = 0;
 
+    bool DoNotTouch = true;
 
     while (!glfwWindowShouldClose(windowHandler->GetWindow())) {
         snap = false;
@@ -93,59 +85,23 @@ int main() {
         mouseY = (int)my;
 
         m_Framebuffer->Bind();
-        uint32_t pixelData1 = m_Framebuffer->ReadPixel(1, mouseX, mouseY);
-        uint32_t pixelData2 = m_Framebuffer->ReadPixel(2, mouseX, mouseY);
         RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.0f});
+        if(mouseX >= 0 && mouseY >=0 && mouseX < (int)viewportSize.x && mouseY << (int)viewportSize.y) {
+            if(glfwGetMouseButton(windowHandler->GetWindow(), GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && DoNotTouch) {
+                uint32_t pixelData1 = m_Framebuffer->ReadPixel(1, mouseX, mouseY);
+                uint32_t pixelData2 = m_Framebuffer->ReadPixel(2, mouseX, mouseY);
+                pixelData = (((uint64_t)pixelData1) << 32 | pixelData2);
+                m_HoveredEntity = pixelData == 0 ? Entity() : Entity((entt::entity)pixelData, m_ActiveScene.get());
+                m_SceneHierarchyPanel.SetSelectedEntity(m_HoveredEntity);
+            }
+        }
         RenderCommand::Clear();
         //m_Framebuffer->ClearAttachment(0, -1);
         m_Framebuffer->ClearAttachment(1, 0);
         m_Framebuffer->ClearAttachment(2, 0);
 
-        bool DoNotTouch = false;
 
-       // INFO("{} {}", pixelData1, pixelData2);
 
-        /*int pixelData1 = m_Framebuffer->ReadPixel(1, mouseX, mouseY);
-        int pixelData2 = m_Framebuffer->ReadPixel(2, mouseX, mouseY);*/
-
-        if(mouseX >= 0 && mouseY >=0 && mouseX < (int)viewportSize.x && mouseY << (int)viewportSize.y) {
-            //int pixelData = m_Framebuffer.ReadPixel(1, mouseX, mouseY);
-            /*std::cout << "###########################################################################################################################" << std::endl;
-            std::cout << "- pixelData " << pixelData << std::endl;
-            std::cout << "---------------------------------------------------------------------------------------------------------------------------" << std::endl;
-            std::cout << "- mousePos " << mouseX << " " << mouseY << std::endl;*/
-            //std::cout << m_Framebuffer.TestPixel() << std::endl;
-            //m_Framebuffer.TestPixel();
-
-            if(glfwGetMouseButton(windowHandler->GetWindow(), GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && DoNotTouch) {
-                pixelData = (((uint64_t)pixelData1) << 32 | pixelData2);
-                //INFO("{}", pixelData);
-                m_HoveredEntity = pixelData == 0 ? Entity() : Entity((entt::entity)pixelData, m_ActiveScene.get());
-                m_SceneHierarchyPanel.SetSelectedEntity(m_HoveredEntity);
-                //INFO(pixelData1);
-            }
-        }
-
-        /*std::string name = "None";
-        if (m_HoveredEntity) {
-            if(m_HoveredEntity.HasComponent<TagComponent>()) {
-                name = m_HoveredEntity.GetComponent<TagComponent>().Tag;
-                INFO(name);
-            }
-            if(m_HoveredEntity.HasComponent<TransformComponent>()) {
-                auto BBBBB = m_HoveredEntity.GetComponent<TransformComponent>().GetTranslation();
-                INFO(BBBBB.x);
-            }
-            else {
-                INFO("NOPE");
-            }
-        }*/
-
-        /*ourShader->Bind();
-        ourShader->SetMat4("view", m_Camera->GetView());
-        ourShader->SetMat4("projection", m_Camera->GetProjection());*/
-
-        // render boxes
         m_ActiveScene->m_Registry.each([&](auto entityID) {
             Entity entity{ entityID , m_ActiveScene.get() };
             if(entity.HasComponent<CubeComponent>()) {
@@ -177,12 +133,10 @@ int main() {
         m_ActiveScene->m_Registry.each([&](auto entityID) {
             Entity entity{ entityID , m_ActiveScene.get() };
                 uint64_t UUID = entity.GetUUID();
-                //INFO("---> {}", UUID);
+                //INFO("---> {}", pixelData);
                 if(UUID == pixelData) {
-                    //INFO("YESSSSSSSSS");
                     m_SceneHierarchyPanel.SetSelectedEntity(entity);
-                    /*auto BBBBB = entity.GetComponent<TransformComponent>().GetTranslation();
-                    INFO(BBBBB.x);*/
+                    pixelData = 0;
                 }
         });
 
@@ -262,7 +216,8 @@ int main() {
                 m_Camera->SetProjection(viewportPanelSize.x, viewportPanelSize.y);
                 m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
             }
-            if(ImGui::IsWindowHovered())
+
+            if (ImGui::IsWindowHovered())
                 m_Camera->Inputs(windowHandler->GetWindow());
 
             windowSize = ImGui::GetContentRegionAvail();
@@ -297,57 +252,15 @@ int main() {
             Entity selectedEntity = m_SceneHierarchyPanel.GetSelectedEntity();
             //Entity selectedEntity = m_HoveredEntity;
             if(selectedEntity) {
-                    INFO("BINGO");
+                    //INFO("BINGO");
             }
             if (selectedEntity && m_GizmoType != -1)
             {
                 ImGuizmo::SetOrthographic(false);
                 ImGuizmo::SetDrawlist();
 
-                //ImGuizmo::SetRect(m_ViewportBounds[0].x, m_ViewportBounds[0].y, m_ViewportBounds[1].x - m_ViewportBounds[0].x, m_ViewportBounds[1].y - m_ViewportBounds[0].y);
-
-                // Camera
-
-                // Runtime camera from entity
-                // auto cameraEntity = m_ActiveScene->GetPrimaryCameraEntity();
-                // const auto& camera = cameraEntity.GetComponent<CameraComponent>().Camera;
-                // const glm::mat4& cameraProjection = camera.GetProjection();
-                // glm::mat4 cameraView = glm::inverse(cameraEntity.GetComponent<TransformComponent>().GetTransform());
-
-                // Editor camera
-                //const glm::mat4& cameraProjection = m_Camera->GetProjection();
-                //glm::mat4 cameraView = m_Camera->GetView();
-
-                // Entity transform
                 auto& tc = selectedEntity.GetComponent<TransformComponent>();
                 glm::mat4 transform = tc.GetTransform();
-
-                // Snapping
-                /*if (glfwGetKey(windowHandler->GetWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
-                    snap = true;
-
-                //bool snap = Input::IsKeyPressed(Key::LeftControl);
-                float snapValue = 0.5f; // Snap to 0.5m for translation/scale
-                // Snap to 45 degrees for rotation
-                if (m_GizmoType == ImGuizmo::OPERATION::ROTATE)
-                    snapValue = 45.0f;
-
-                float snapValues[3] = { snapValue, snapValue, snapValue };
-
-                ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection),
-                                     (ImGuizmo::OPERATION)m_GizmoType, ImGuizmo::LOCAL, glm::value_ptr(transform),
-                                     nullptr, snap ? snapValues : nullptr);
-
-                if (ImGuizmo::IsUsing())
-                {
-                    glm::vec3 translation, rotation, scale;
-                    Math::DecomposeTransform(transform, translation, rotation, scale);
-
-                    glm::vec3 deltaRotation = rotation - tc.Rotation;
-                    tc.Translation = translation;
-                    tc.Rotation += deltaRotation;
-                    tc.Scale = scale;
-                }*/
 
                 float windowWidth = (float)ImGui::GetWindowWidth();
                 float winodwHeight = (float)ImGui::GetWindowHeight();

@@ -132,7 +132,7 @@ namespace Engine {
 
     void Camera::Inputs(GLFWwindow* window)
     {
-        // Handles key inputs
+        /*// Handles key inputs
         if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         {
             m_Position += speed * m_Orientation;
@@ -164,7 +164,9 @@ namespace Engine {
         else if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE)
         {
             speed = 0.1f;
-        }
+        }*/
+
+        //glfwSetCursorPos(window, (m_Width / 2), (m_Height / 2));
 
 
         // Handles mouse inputs
@@ -178,6 +180,40 @@ namespace Engine {
             {
                 glfwSetCursorPos(window, (m_Width / 2), (m_Height / 2));
                 firstClick = false;
+            }
+
+            // Handles key inputs
+            if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+            {
+                m_Position += speed * m_Orientation;
+            }
+            if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+            {
+                m_Position += speed * -glm::normalize(glm::cross(m_Orientation, m_Up));
+            }
+            if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+            {
+                m_Position += speed * -m_Orientation;
+            }
+            if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+            {
+                m_Position += speed * glm::normalize(glm::cross(m_Orientation, m_Up));
+            }
+            if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+            {
+                m_Position += speed * m_Up;
+            }
+            if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+            {
+                m_Position += speed * -m_Up;
+            }
+            if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+            {
+                speed = 0.4f;
+            }
+            else if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE)
+            {
+                speed = 0.1f;
             }
 
             // Stores the coordinates of the cursor
